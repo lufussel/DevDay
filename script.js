@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get references to DOM elements
     const factBox = document.getElementById('fact-box');
     const generateBtn = document.getElementById('generate-btn');
+    const copyBtn = document.getElementById('copy-btn');
     
     // Store the facts array
     let facts = [];
@@ -22,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add click event listener to the button
     generateBtn.addEventListener('click', generateFact);
+    
+    // Add click event listener to the copy button
+    copyBtn.addEventListener('click', copyFact);
     
     // Function to load facts from JSON file
     function loadFacts() {
@@ -52,10 +56,58 @@ document.addEventListener('DOMContentLoaded', function() {
         if (facts.length > 0) {
             const randomIndex = Math.floor(Math.random() * facts.length);
             factBox.innerText = facts[randomIndex];
+            // Enable copy button when a fact is displayed
+            copyBtn.disabled = false;
         } else {
             factBox.innerText = 'No facts available. Please refresh the page.';
             // Try loading facts again
             loadFacts();
         }
+    }
+    
+    // Function to copy the current fact to clipboard
+    function copyFact() {
+        const factText = factBox.innerText;
+        
+        // Check if there's a fact to copy
+        if (!factText || factText === 'Loading facts...' || factText === 'Click the button to get a fact!' || factText.includes('Error') || factText.includes('No facts available')) {
+            return;
+        }
+        
+        // Use the Clipboard API to copy text
+        navigator.clipboard.writeText(factText).then(function() {
+            // Show success feedback
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = 'Copied!';
+            setTimeout(function() {
+                copyBtn.innerText = originalText;
+            }, 2000);
+        }).catch(function(err) {
+            // Fallback for older browsers or if clipboard API fails
+            console.error('Could not copy text: ', err);
+            
+            // Try fallback method
+            const textArea = document.createElement('textarea');
+            textArea.value = factText;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                const originalText = copyBtn.innerText;
+                copyBtn.innerText = 'Copied!';
+                setTimeout(function() {
+                    copyBtn.innerText = originalText;
+                }, 2000);
+            } catch (fallbackErr) {
+                console.error('Fallback copy failed: ', fallbackErr);
+                copyBtn.innerText = 'Copy failed';
+                setTimeout(function() {
+                    copyBtn.innerText = 'Copy Fact';
+                }, 2000);
+            }
+            
+            document.body.removeChild(textArea);
+        });
     }
 });

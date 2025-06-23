@@ -48,6 +48,19 @@ button:hover {
     background-color: #8C5A9E;
 }
 
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background-color: #cccccc;
+}
+
+#copy-btn {
+    margin-left: 10px;
+}
+
 .click-counter {
     background-color: #996FF7;
     color: #FFFFFF;
