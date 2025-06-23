@@ -7,6 +7,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Store the facts array
     let facts = [];
     
+    // Initialize click counter
+    let clickCount = 0;
+    
+    // Create a counter element to display the number of clicks
+    const clickCounter = document.createElement('div');
+    clickCounter.id = 'click-counter';
+    clickCounter.className = 'click-counter';
+    clickCounter.innerText = 'Facts generated: 0';
+    document.querySelector('.container').appendChild(clickCounter);
+    
     // Load facts from the JSON file
     loadFacts();
     
@@ -35,6 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to generate and display a random fact
     function generateFact() {
+        // Increment and display the click count
+        clickCount++;
+        clickCounter.innerText = `Facts generated: ${clickCount}`;
+        
         if (facts.length > 0) {
             const randomIndex = Math.floor(Math.random() * facts.length);
             factBox.innerText = facts[randomIndex];
